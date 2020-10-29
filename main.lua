@@ -20,7 +20,7 @@ function love.load()
 
     love.window.setTitle('Pong')
     math.randomseed(os.time())
-    smallFont = love.graphics.newFont('font.ttf', 10)
+    smallFont = love.graphics.newFont('font.ttf', 12)
     largeFont = love.graphics.newFont('font.ttf', 16)
     scoreFont = love.graphics.newFont('font.ttf', 32)
     love.graphics.setFont(smallFont)
@@ -206,35 +206,44 @@ function love.draw()
 
     love.graphics.clear(40/255, 45/255, 52/255, 1)
 
-    love.graphics.setFont(smallFont)
+    --love.graphics.setFont(smallFont)
     
 	--border
     love.graphics.rectangle("line", 5, 5, VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 15, segments)
 	love.graphics.setLineWidth(2)
-    displayScore()
+    --displayScore()
 
     if gameState == 'start' then
         love.graphics.setFont(smallFont)
+        love.graphics.setColor(255, 255, 255, 255)
         love.graphics.printf('Welcome to Pong!', 0, 10, VIRTUAL_WIDTH, 'center')
-        love.graphics.printf('Press Enter to begin!', 0, 20, VIRTUAL_WIDTH, 'center')
+        love.graphics.rectangle('line', VIRTUAL_WIDTH / 2 - 160, VIRTUAL_HEIGHT / 2 - 40, 320, 80)
+        love.graphics.printf('Press Enter to start!', 0, VIRTUAL_HEIGHT / 2 - 6, VIRTUAL_WIDTH, 'center')
+        --love.graphics.printf('Press Enter to begin!', 0, 20, VIRTUAL_WIDTH, 'center')
+    elseif gameState == 'play' then
+        ball:render()
     elseif gameState == 'serve' then
         love.graphics.setFont(smallFont)
+        love.graphics.setColor(255, 255, 255, 255)
         love.graphics.printf('Player ' .. tostring(servingPlayer) .. "'s serve!",
             0, 10, VIRTUAL_WIDTH, 'center')
         love.graphics.printf('Press Enter to serve!', 0, 20, VIRTUAL_WIDTH, 'center')
-    elseif gameState == 'play' then
-        love.graphics.line(215, 232, 215, 6)
+        --love.graphics.line(215, 232, 215, 6)
+        displayScore()
     elseif gameState == 'done' then
+
         love.graphics.setFont(largeFont)
+        love.graphics.setColor(255, 255, 255, 255)
         love.graphics.printf('Player ' .. tostring(winningPlayer) .. ' wins!',
             0, 150, VIRTUAL_WIDTH, 'center')
         love.graphics.setFont(smallFont)
         love.graphics.printf('Press Enter to restart!', 0, 170, VIRTUAL_WIDTH, 'center')
+        displayScore()
     end
 
     player1:render()
     player2:render()
-    ball:render()
+    --ball:render()
 
     displayFPS()
 
@@ -250,8 +259,22 @@ end
 function displayScore()
 
     love.graphics.setFont(scoreFont)
-    love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50,
-        VIRTUAL_HEIGHT / 3)
-    love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30,
-        VIRTUAL_HEIGHT / 3)
+    if player1Score > player2Score then
+        love.graphics.setColor(0, 255, 0, 255)
+    elseif player1Score < player2Score then
+        love.graphics.setColor(255, 0, 0, 255)
+    else
+        love.graphics.setColor(255, 255, 255, 255)
+    end
+    --love.graphics.printf(tostring(player1Score),0,VIRTUAL_HEIGHT / 4 - 32,VIRTUAL_WIDTH,'center')
+    love.graphics.print(tostring(player1Score), VIRTUAL_WIDTH / 2 - 50,VIRTUAL_HEIGHT / 3)
+    if player1Score < player2Score then
+        love.graphics.setColor(0, 255, 0, 255)
+    elseif player1Score > player2Score then
+        love.graphics.setColor(255, 0, 0, 255)
+    else
+        love.graphics.setColor(255, 255, 255, 255)
+    end
+    --love.graphics.printf(tostring(player2Score),0,3 * VIRTUAL_HEIGHT / 4 - 32,VIRTUAL_WIDTH,'center')
+    love.graphics.print(tostring(player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
 end
